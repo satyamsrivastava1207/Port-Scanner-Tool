@@ -6,7 +6,7 @@ A simple yet effective web-based port scanning tool built using Python and Flask
 
 ## 📸 Demo Screenshot
 
-![Port Scanner Screenshot](Screenshot.png)
+![Port Scanner Screenshot](static/Screenshot.png)
 
 ---
 

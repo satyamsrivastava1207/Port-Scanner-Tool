@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Port Scanner Tool</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1><b>NetSpecter</b></h1>
+    <form id="scanForm">
+      <input type="text" id="target" placeholder="Enter target IP or domain" required>
+      <input type="text" id="portRange" placeholder="Enter port range (e.g., 20-80)" required>
+      <button type="submit">Start Scan</button>
+    </form>
+
+    <div id="progressSection" style="display: none;">Scanning in progress...</div>
+    <div id="errorMsg" class="error"></div>
+
+    <section id="resultsSection" style="display: none;">
+      <h2>Scan Results:</h2>
+      <ul id="resultsList"></ul>
+    </section>
+  </div>
+
+  <script src="/static/js/script.js"></script>
+</body>
+</html>

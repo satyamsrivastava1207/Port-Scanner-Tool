@@ -1,0 +1,86 @@
+body {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  background-color: #0e1a2b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.container {
+  background: #162238;
+  padding: 30px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+h1, h2 {
+  text-align: center;
+  color: #00ffc8;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #00ffc8;
+  color: #0e1a2b;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #00bfa5;
+}
+
+#errorMsg {
+  color: #ff4d4d;
+  margin-top: 10px;
+  text-align: center;
+}
+
+#resultsSection {
+  margin-top: 20px;
+}
+
+#resultsList {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* Spinner Styling */
+#progressSection {
+  display: none;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.spinner {
+  border: 8px solid #162238;
+  border-top: 8px solid #00ffc8;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
