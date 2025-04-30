@@ -62,13 +62,11 @@ http://localhost:5000
 ---
 Dependencies:
 This project uses the following libraries:
----
----
+
 Flask — for serving the backend
----
----
+
 socket — for low-level network port scanning (built-in)
----
+
 
 ---
 Created by Satyam Srivastava
