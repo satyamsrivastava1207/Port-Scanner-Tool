@@ -64,8 +64,7 @@ Dependencies:
 This project uses the following libraries:
 
 Flask — for serving the backend
-
-socket — for low-level network port scanning (built-in)
+Socket — for low-level network port scanning (built-in)
 ---
 
 ---
