@@ -1,25 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Port Scanner Tool</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Port Scanner</title>
+  <link rel="stylesheet" href="/static/css/styles.css" />
 </head>
 <body>
   <div class="container">
-    <h1><b>NetSpecter</b></h1>
+    <h1>Port Scanner</h1>
+
     <form id="scanForm">
-      <input type="text" id="target" placeholder="Enter target IP or domain" required>
-      <input type="text" id="portRange" placeholder="Enter port range (e.g., 20-80)" required>
+      <input type="text" id="target" placeholder="Enter host (e.g., scanme.nmap.org)" required />
+      <input type="text" id="portRange" placeholder="Enter port range (e.g., 20-100)" required />
       <button type="submit">Start Scan</button>
     </form>
 
-    <div id="progressSection" style="display: none;">Scanning in progress...</div>
-    <div id="errorMsg" class="error"></div>
+    <p id="errorMsg" style="color: red;"></p>
 
-    <section id="resultsSection" style="display: none;">
-      <h2>Scan Results:</h2>
+    <div id="progressSection" style="display: none;">
+      <div id="loader" class="loader"></div>
+      <p>Scanning... Please wait</p>
+    </div>
+
+    <div id="resultsSection" style="display: none;">
+      <p id="timeTaken" style="display: none;"></p>
       <ul id="resultsList"></ul>
+    </div>
+
+    <section id="historySection">
+      <h2>Scan History</h2>
+      <ul id="historyList"></ul>
     </section>
   </div>
 
