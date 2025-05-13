@@ -63,8 +63,9 @@ http://localhost:5000
 Dependencies:
 This project uses the following libraries:
 
-Flask — for serving the backend
-Socket — for low-level network port scanning (built-in)
+Flask- for serving the backend
+Socket- for low-level network port scanning (built-in)
+
 ---
 
 ---
