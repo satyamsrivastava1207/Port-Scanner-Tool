@@ -9,13 +9,16 @@ document.getElementById('scanForm').addEventListener('submit', async function (e
   const progressSection = document.getElementById('progressSection');
   const loader = document.getElementById('loader');
   const timeTaken = document.getElementById('timeTaken');
+  const downloadBtn = document.getElementById('downloadBtn');
 
+  // Reset display
   errorMsg.textContent = '';
   resultsSection.style.display = 'none';
   resultsList.innerHTML = '';
   progressSection.style.display = 'block';
   loader.style.display = 'block';
   timeTaken.style.display = 'none';
+  downloadBtn.style.display = 'none';
 
   if (!target || !portRange) {
     errorMsg.textContent = 'Please fill in both fields.';
@@ -48,23 +51,70 @@ document.getElementById('scanForm').addEventListener('submit', async function (e
     hostInfo.style.marginBottom = '10px';
     resultsList.appendChild(hostInfo);
 
+    const reportLines = [];
+    reportLines.push(`Host: ${target}`);
+    reportLines.push(`IP Address: ${ip}`);
+    reportLines.push(`Hostname: ${hostname}`);
+    reportLines.push(`Port Range: ${portRange}`);
+    reportLines.push(`Scan Duration: ${duration} seconds`);
+    reportLines.push(`-----------------------------`);
+
     if (openPorts.length > 0) {
       openPorts.forEach(item => {
+        const line = `Port ${item.port} is open | Banner: ${item.banner}`;
         const li = document.createElement('li');
-        li.textContent = `Port ${item.port} is open | Banner: ${item.banner}`;
+        li.textContent = line;
         resultsList.appendChild(li);
+        reportLines.push(line);
       });
     } else {
       resultsList.innerHTML += '<li>No open ports found.</li>';
+      reportLines.push('No open ports found.');
     }
 
     timeTaken.style.display = 'block';
     timeTaken.textContent = `Scan completed in ${duration} seconds`;
-    resultsSection.style.display = 'block';
 
-    saveScanToHistory(target, portRange, openPorts, ip, hostname, duration);
-    downloadReport(target, portRange, ip, hostname, openPorts, duration);
-    displayScanHistory();
+    resultsSection.style.display = 'block';
+    downloadBtn.style.display = 'inline-block';
+
+    downloadBtn.onclick = () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 10;
+
+      doc.setFontSize(12);
+      reportLines.forEach(line => {
+        if (y > 280) {
+          doc.addPage();
+          y = 10;
+        }
+        doc.text(line, 10, y);
+        y += 8;
+      });
+
+      const fileName = `port_scan_report_${target.replace(/[^\w\d]/g, '_')}.pdf`;
+      doc.save(fileName);
+    };
+
+    // Save scan history
+    const scanRecord = {
+      target,
+      ip,
+      hostname,
+      portRange,
+      duration,
+      timestamp: new Date().toLocaleString()
+    };
+
+    const historyList = document.getElementById('historyList');
+    const historyItem = document.createElement('li');
+    historyItem.textContent = `[${scanRecord.timestamp}] ${scanRecord.target} (${scanRecord.ip}) - ${scanRecord.portRange}`;
+    historyList.prepend(historyItem);
+
+    let history = JSON.parse(localStorage.getItem('scanHistory')) || [];
+    history.unshift(scanRecord);
+    localStorage.setItem('scanHistory', JSON.stringify(history));
 
   } catch (error) {
     loader.style.display = 'none';
@@ -73,49 +123,19 @@ document.getElementById('scanForm').addEventListener('submit', async function (e
   }
 });
 
-function saveScanToHistory(target, portRange, openPorts, ip, hostname, duration) {
-  const history = JSON.parse(localStorage.getItem('scanHistory') || '[]');
-  history.unshift({
-    timestamp: new Date().toISOString(),
-    target,
-    portRange,
-    openPorts,
-    ip,
-    hostname,
-    duration
-  });
-  localStorage.setItem('scanHistory', JSON.stringify(history.slice(0, 10))); // Keep only last 10 entries
-}
-
-function displayScanHistory() {
+// Load scan history on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const history = JSON.parse(localStorage.getItem('scanHistory')) || [];
   const historyList = document.getElementById('historyList');
-  const history = JSON.parse(localStorage.getItem('scanHistory') || '[]');
-  historyList.innerHTML = '';
   history.forEach(entry => {
-    const li = document.createElement('li');
-    li.textContent = `[${new Date(entry.timestamp).toLocaleString()}] Target: ${entry.target}, Range: ${entry.portRange}, Open: ${entry.openPorts.length}, Time: ${entry.duration}s`;
-    historyList.appendChild(li);
+    const item = document.createElement('li');
+    item.textContent = `[${entry.timestamp}] ${entry.target} (${entry.ip}) - ${entry.portRange}`;
+    historyList.appendChild(item);
   });
-}
 
-function downloadReport(target, portRange, ip, hostname, openPorts, duration) {
-  let report = `Scan Report\n===========\n`;
-  report += `Target: ${target}\nIP Address: ${ip}\nHostname: ${hostname}\nPort Range: ${portRange}\nDuration: ${duration} seconds\n\n`;
-  report += `Open Ports:\n`;
-  if (openPorts.length === 0) {
-    report += `No open ports found.\n`;
-  } else {
-    openPorts.forEach(p => {
-      report += `Port ${p.port}: ${p.banner}\n`;
-    });
-  }
-
-  const blob = new Blob([report], { type: 'text/plain' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = `scan_report_${target.replaceAll('.', '_')}.txt`;
-  link.click();
-}
-
-// Load history on page load
-window.addEventListener('DOMContentLoaded', displayScanHistory);
+  const clearBtn = document.getElementById('clearHistoryBtn');
+  clearBtn.addEventListener('click', () => {
+    localStorage.removeItem('scanHistory');
+    historyList.innerHTML = '';
+  });
+});
